@@ -1,0 +1,244 @@
+---
+title: "Meyer Wong Project"
+output: md_document
+---
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(readr)
+```
+
+```{r}
+top2017 <- read_csv("/home/wong9/Mscs 264 S18/Project/wongmeyer/OurRProject/top2017.csv")
+daily200 <- read_csv("/home/wong9/Mscs 264 S18/Project/wongmeyer/OurRProject/daily200.csv")
+
+
+colnames(daily200) <- c("position",
+                        "name",
+                        "artists",
+                        "streams",
+                        "url",
+                        "date",
+                        "region")
+
+
+topsongs <- top2017 %>%
+  inner_join(daily200, by = "name")
+
+topsongs <- topsongs %>% 
+  mutate(region = fct_recode(region, 
+            argentina = "ar",
+             austria = "at",
+             australia = "au",
+             belgium = "be",
+             bolivia = "bo",
+             brazil = "br",
+             canada = "ca",
+             switzerland = "ch",
+             chile = "cl",
+             colombia = "co",
+             costa_rica = "cr",
+             czechia = "cz",
+             germany = "de",
+             denmark = "dk",
+             dominican_republic = "do",
+             ecuador = "ec",
+             estonia = "ee",
+             spain = "es",
+             finland = "fi",
+             france = "fr",
+             great_britain = "gb",
+             greece = "gr",
+             guatemala = "gt",
+             hong_kong = "hk",
+             honduras = "hn",
+             hungary = "hu",
+             indonesia = "id",
+             ireland = "ie",
+             iceland = "is",
+             italy = "it",
+             japan = "jp",
+             lithuania = "lt",
+             luxembourg = "lu",
+             latvia = "lv",
+             mexico = "mx",
+             malaysia = "my",
+             netherlands = "nl",
+             norway = "no",
+             new_zealand = "nz",
+             panama = "pa",
+             peru = "pe",
+             philippines = "ph",
+             poland = "pl",
+             portugal = "pt",
+             paraguay = "py",
+             sweden = "se",
+             singapore = "sg",
+             slovakia = "sk",
+             el_salvador = "sv",
+             turkey = "tr",
+             taiwan = "tw",
+             united_states = "us",
+             uruguay = "uy"
+             ))
+
+```
+
+How many times songs on the top 100 show up on the daily 200 shows how popular the songs are compared to each other.  The most popular song worldwide on Spotify in 2017 that was released that year is 'Shape of You' by Ed Sheeron.
+```{r}
+timesondaily <- topsongs%>%
+  group_by(name)%>%
+  count()%>%
+  arrange(desc(n))
+timesondaily
+```
+
+How many times songs from the top 100 showed up on each countries daily 200. We can see that at the top, New Zealand had 'Closer' on their daily 200 a total of 446 times, however 'Let Me Love You' shows up for multiple countries in the top 10.
+```{r}
+regionaltimes <- topsongs%>%
+  group_by(name, region)%>%
+  count()%>%
+  arrange(desc(n))
+regionaltimes
+```
+
+We have found the top song for each country based on the number of days that song spent in the top 200 song list for that country.  Countries whose songs spent an equal number of days on the list have all their tying songs on the list, which is why there are 110 top songs for 54 countries.  I have joined back in the data about the songs in order to find trends about each countries preferences.
+
+```{r}
+top1_per_country <- topsongs %>%
+  group_by(name, region) %>%
+  count() %>%
+  ungroup() %>%
+  group_by(region) %>%
+  top_n(1) %>%
+  arrange(desc(n)) %>%
+  ungroup()
+
+top1_per_country2 <- top1_per_country %>%
+  inner_join(top2017, by = "name")
+
+top1_per_country3 <- top1_per_country2 %>%
+  mutate(region = fct_collapse(region,
+                             "Latin_America" = c("argentina", "bolivia", "brazil", "chile", "colombia", "costa_rica", "dominican_republic", "ecuador", "guatemala", "mexico", "panama", "peru", "portugal", "paraguay", "el_salvador", "uruguay", "honduras"),
+                             "Western_Europe" = c("belgium", "switzerland", "germany", "denmark", "spain", "finland", "france", "great_britain", "ireland", "iceland", "luxembourg", "netherlands", "norway", "sweden"),
+                             "North_America" = c("canada", "united_states"),
+                             "Central/Eastern_Europe" = c("austria", "czechia", "estonia", "hungary", "lithuania", "latvia", "poland", "slovakia"), 
+                             "Southern_Europe" = c("italy", "greece", "turkey"),
+                             "East_Asia" = c("hong_kong", "japan", "taiwan"), 
+                 "Oceania" = c("australia", "indonesia", "malaysia", "new_zealand", "philippines", "singapore")
+             ))
+
+top1_per_country3 %>%
+ggplot(mapping = aes(x = tempo, y = region)) +
+  geom_point()
+
+top1_per_country3 %>%
+  ggplot(mapping = aes(x = ))
+```
+
+This plot shows that the amount of times that a song appears on the daily 200 has some correlation to a song's rank on the top 100 songs of the year. 
+```{r}
+top20171 <- top2017%>% 
+  mutate(rank = 1:n()) 
+
+timesdaily <- top20171%>%
+  inner_join(timesondaily, by = "name")
+
+timesdaily%>%
+  ggplot(aes(x = rank, y = n)) +
+  geom_point()+
+  geom_smooth()
+```
+
+This shows each country's mean qualities of music as well as each area's mean qualities of music. Overall each area has the same mean qualties in music taste. These are taken from only those in the daily 200 that cross the top 2017 which will obviously effect it to some degree, but each instance that the song from the top 2017 is on the daily is an individual row. 
+```{r}
+regional1 <- regionaltimes%>%
+  inner_join(top2017, by = c("name"))
+
+regional2 <- topsongs%>%
+  group_by(region)%>%
+  summarise(meandance = mean(danceability), meanenergy = mean(energy), meanloud = mean(loudness), meanspeech = mean(speechiness), meanacoustic = mean(acousticness), meaninstrumental = mean(instrumentalness), meanliveness = mean(liveness), meanvalence = mean(valence), meantemp = mean(tempo))
+regional2
+
+byarea <- topsongs%>%
+  mutate(region = fct_collapse(region,                              "Latin_America" = c("argentina", "bolivia", "brazil", "chile", "colombia", "costa_rica", "dominican_republic", "ecuador", "guatemala", "mexico", "panama", "peru", "portugal", "paraguay", "el_salvador", "uruguay", "honduras"),
+                             "Western_Europe" = c("belgium", "switzerland", "germany", "denmark", "spain", "finland", "france", "great_britain", "ireland", "iceland", "luxembourg", "netherlands", "norway", "sweden"),
+                             "North_America" = c("canada", "united_states"),
+                             "Central/Eastern_Europe" = c("austria", "czechia", "estonia", "hungary", "lithuania", "latvia", "poland", "slovakia"), 
+                             "Southern_Europe" = c("italy", "greece", "turkey"),
+                             "East_Asia" = c("hong_kong", "japan", "taiwan"), 
+                 "Oceania" = c("australia", "indonesia", "malaysia", "new_zealand", "philippines", "singapore")
+             ))
+
+set.seed(666)
+byarea_small <- byarea %>%
+  sample_n(10000)
+
+area1 <- byarea%>%
+  group_by(region)%>%
+  summarise(meandance = mean(danceability), meanenergy = mean(energy), meanloud = mean(loudness), meanspeech = mean(speechiness), meanacoustic = mean(acousticness), meaninstrumental = mean(instrumentalness), meanliveness = mean(liveness), meanvalence = mean(valence), meantemp = mean(tempo))
+area1
+
+```
+
+Latin Americans seem to enjoy most simple.  As the next three plots show, of all the regions studied, Latin America has the lowest average wordcount as well as lowest electronic instrument prevalence, with the lowest acoustic instrument prevalence with one exception in their popular songs.
+
+```{r}
+area1 %>%
+  ggplot(aes(y = region, x = meaninstrumental)) +
+  geom_point()
+
+area1 %>%
+  ggplot(aes(y = region, x = meanspeech)) +
+  geom_point()
+
+area1 %>% 
+  ggplot(aes(y = region, x = meanacoustic)) +
+  geom_point()
+```
+
+Somewhat suprising to us is the results of these two graphs which show that North Americans enjoy the quietest and slowest music around the world.
+
+```{r}
+area1 %>%
+  ggplot(aes(y = region, x = meantemp)) +
+  geom_point()
+
+area1 %>%
+  ggplot(aes(y = region, x = meanloud)) +
+  geom_point()
+```
+
+This plot shows the realtionship between a song's ranking on the charts with it's danceability and speechiness. As we can see there is no correlation between rank and either of the two, but we can see that most songs do have a lower speechiness 
+```{r}
+timesdaily%>%
+  ggplot(aes(x = rank, y = danceability, color = speechiness)) +
+  geom_point()
+```
+
+As you can see from this plot the number of streams a song gets actually doesn't contribute to the ranking of a song.
+```{r}
+streams1 <- topsongs%>%
+  group_by(name)%>%
+  summarise(meanstreams = mean(streams))
+
+streams2 <- streams1%>%
+  left_join(top20171, by = "name")
+  
+streams2%>%
+  ggplot(aes(x = rank, y = meanstreams)) + 
+  geom_point()+
+  geom_smooth()
+
+streams2%>%
+  ggplot(aes(x = tempo, y = meanstreams)) + 
+  geom_point()+
+  geom_smooth()
+
+streams2%>%
+  ggplot(aes(x = acousticness, y = meanstreams)) + 
+  geom_point()+
+  geom_smooth()
+```
+

@@ -192,12 +192,12 @@ find trends about each countries preferences.
     ggplot(mapping = aes(x = tempo, y = region)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-4-1.png)<!-- -->
 
     top1_per_country3 %>%
       ggplot(mapping = aes(x = ))
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-4-2.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-4-2.png)<!-- -->
 
 This plot shows that the amount of times that a song appears on the
 daily 200 has some correlation to a song's rank on the top 100 songs of
@@ -216,7 +216,7 @@ the year.
 
     ## `geom_smooth()` using method = 'loess'
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-5-1.png)<!-- -->
 
 This shows each country's mean qualities of music as well as each area's
 mean qualities of music. Overall each area has the same mean qualties in
@@ -292,19 +292,19 @@ popular songs.
       ggplot(aes(y = region, x = meaninstrumental)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-1.png)<!-- -->
 
     area1 %>%
       ggplot(aes(y = region, x = meanspeech)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-2.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-2.png)<!-- -->
 
     area1 %>% 
       ggplot(aes(y = region, x = meanacoustic)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-3.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-7-3.png)<!-- -->
 
 Somewhat suprising to us is the results of these two graphs which show
 that North Americans enjoy the quietest and slowest music around the
@@ -314,13 +314,13 @@ world.
       ggplot(aes(y = region, x = meantemp)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-8-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-8-1.png)<!-- -->
 
     area1 %>%
       ggplot(aes(y = region, x = meanloud)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-8-2.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-8-2.png)<!-- -->
 
 This plot shows the realtionship between a song's ranking on the charts
 with it's danceability and speechiness. As we can see there is no
@@ -331,7 +331,7 @@ songs do have a lower speechiness
       ggplot(aes(x = rank, y = danceability, color = speechiness)) +
       geom_point()
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-9-1.png)<!-- -->
 
 As you can see from this plot the number of streams a song gets actually
 doesn't contribute to the ranking of a song.
@@ -350,7 +350,7 @@ doesn't contribute to the ranking of a song.
 
     ## `geom_smooth()` using method = 'loess'
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-1.png)<!-- -->
 
     streams2%>%
       ggplot(aes(x = tempo, y = meanstreams)) + 
@@ -359,7 +359,7 @@ doesn't contribute to the ranking of a song.
 
     ## `geom_smooth()` using method = 'loess'
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-2.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-2.png)<!-- -->
 
     streams2%>%
       ggplot(aes(x = acousticness, y = meanstreams)) + 
@@ -368,4 +368,4 @@ doesn't contribute to the ranking of a song.
 
     ## `geom_smooth()` using method = 'loess'
 
-![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-3.png)
+![](ProjectScript_files/figure-markdown_strict/unnamed-chunk-10-3.png)<!-- -->
